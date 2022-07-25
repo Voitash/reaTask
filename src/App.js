@@ -25,9 +25,12 @@ class App extends Component {
 
   createNewToDo = (task) => {
     if (!this.state.toDoItems.find((item) => item.action === task)) {
-      this.setState({
-        toDoItems: [...this.state.toDoItems, { action: task, done: false }],
-      });
+      this.setState(
+        {
+          toDoItems: [...this.state.toDoItems, { action: task, done: false }],
+        },
+        () => localStorage.setItem("todos", JSON.stringify(this.state))
+      );
     }
   };
 
@@ -44,6 +47,24 @@ class App extends Component {
       .map((item) => (
         <TodoRow key={item.action} item={item} callback={this.toggleToDo} />
       ));
+
+  componentDidMount = () => {
+    let data = localStorage.getItem("todos");
+    this.setState(
+      data != null
+        ? JSON.parse(data)
+        : {
+            userName: "Voitash",
+            toDoItems: [
+              { action: "Learning React", done: false },
+              { action: "Reading Harry Potter", done: false },
+              { action: "drink some beer", done: true },
+              { action: "Portfolio project in Figma", done: false },
+            ],
+            showCompleted: true,
+          }
+    );
+  };
 
   render = () => (
     <div>
